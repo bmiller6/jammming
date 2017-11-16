@@ -3,14 +3,14 @@ import './App.css';
 import SearchBar from '../SearchBar/SearchBar';
 import SearchResults from '../SearchResults/SearchResults';
 import Playlist from '../Playlist/Playlist';
-import Spotify from '/Users/brycemiller/Desktop/codecademy/jammming/src/util/Spotify';
+import Spotify from '../../util/Spotify';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       searchResults: [],
-      playlistName: '',
+      playlistName: 'New Playlist',
       playlistTracks:[]
     };
     this.addTrack = this.addTrack.bind(this);
@@ -42,20 +42,20 @@ class App extends Component {
   }
 
   savePlaylist() {
-   const trackURIs = this.state.playlistTracks && this.state.playlistTracks.map(track => track.uri);
-   Spotify.savePlaylist(this.state.playlistName, trackURIs).then(() => {
-     this.setState({
-       playlistName: 'New Playlist',
-       searchResults: []
-       });
-    });
+    const trackURIs = this.state.playlistTracks.map(tracks => tracks.uri);
+    Spotify.savePlaylist(this.state.playlistName, trackURIs).then(() => {
+      this.setState({
+        playlistName: 'New Playlist',
+        searchResults: [],
+        playlistTracks: []
+      })
+    })
   }
 
   search(searchTerm) {
     Spotify.search(searchTerm).then(searchResults => {
       this.setState({searchResults: searchResults});
     });
-    console.log(this.state.searchResults)
   }
 
   render() {
@@ -66,14 +66,15 @@ class App extends Component {
           <SearchBar onSearch={this.search}/>
           <div className="App-playlist">
             <SearchResults
-              onSearch={this.search}
               searchResults={this.state.searchResults}
-              onAdd={this.addTrack}/>
+              onAdd={this.addTrack}
+            />
             <Playlist
               onSave={this.savePlaylist}
               onNameChange={this.updatePlaylistName}
               playlistTracks={this.state.playlistTracks}
-              onRemove={this.removeTrack}/>
+              onRemove={this.removeTrack}
+            />
           </div>
         </div>
       </div>
